@@ -10,7 +10,7 @@ document.getElementById("predictForm").addEventListener("submit", async function
 
     try {
         // Enviar para o backend no Render
-        const response = await fetch("https://SEU-ENDPOINT-DO-RENDER.onrender.com/predict", {
+        const response = await fetch("https://tarot-classifier.onrender.com/predict", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(musicData),
