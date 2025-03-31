@@ -1,12 +1,13 @@
 document.getElementById("predictForm").addEventListener("submit", async (event) => {
     event.preventDefault();
-    
+
     const button = document.getElementById("predictButton");
     const resultDiv = document.getElementById("result");
     const loader = document.getElementById("loader");
-    
+
     // Reset and show loading
     resultDiv.textContent = "";
+    resultDiv.style.color = "black"; // Reset color
     button.disabled = true;
     loader.style.display = "block";
 
@@ -26,11 +27,18 @@ document.getElementById("predictForm").addEventListener("submit", async (event) 
             Liveness: parseFloat(document.getElementById("liveness").value),
             Valence: parseFloat(document.getElementById("valence").value),
             Tempo: parseFloat(document.getElementById("tempo").value),
-            "Time Signature": parseFloat(document.getElementById("time_signature").value)
+            "Time Signature": parseFloat(document.getElementById("time_signature").value) // Use a chave com espaço aqui também
         };
 
-        // Replace with your actual API endpoint
-        const response = await fetch("https://tarot-classifier.onrender.com", {
+        // Log para verificar os dados enviados
+        console.log("Enviando dados:", JSON.stringify(formData));
+
+        // URL da API no Render com o endpoint /predict
+        const apiUrl = "https://tarot-classifier.onrender.com/predict"; // <--- URL CORRIGIDA
+
+        console.log("Chamando API:", apiUrl); // Log para verificar a URL
+
+        const response = await fetch(apiUrl, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -38,19 +46,35 @@ document.getElementById("predictForm").addEventListener("submit", async (event) 
             body: JSON.stringify(formData)
         });
 
+        console.log("Status da resposta:", response.status); // Log do status
+
+        // Tenta ler a resposta como JSON mesmo se não for 'ok', pode conter um erro útil
+        const data = await response.json();
+        console.log("Dados recebidos:", data); // Log dos dados recebidos
+
         if (!response.ok) {
-            throw new Error(`Erro HTTP: ${response.status}`);
+            // Se a resposta JSON tiver uma chave 'error', usa ela, senão usa o status HTTP
+            const errorMessage = data.error || `Erro HTTP: ${response.status}`;
+            throw new Error(errorMessage);
         }
 
-        const data = await response.json();
-        resultDiv.textContent = `Carta prevista: ${data.carta_prevista}`;
-        resultDiv.style.color = "green";
+        // Assumindo que a resposta de sucesso tem a chave 'carta_prevista'
+        if (data.carta_prevista !== undefined) {
+             resultDiv.textContent = `Carta prevista: ${data.carta_prevista}`;
+             resultDiv.style.color = "green";
+        } else {
+            // Caso a resposta seja 'ok' mas não tenha 'carta_prevista'
+            throw new Error("Formato de resposta inesperado do servidor.");
+        }
+
 
     } catch (error) {
-        console.error("Erro:", error);
-        resultDiv.textContent = "Erro na previsão. Verifique o console (F12).";
+        console.error("Erro durante a requisição fetch:", error);
+        // Mostra a mensagem de erro específica capturada
+        resultDiv.textContent = `Erro na previsão: ${error.message}`;
         resultDiv.style.color = "red";
     } finally {
+        // Garante que o botão e o loader voltem ao normal
         button.disabled = false;
         loader.style.display = "none";
     }
