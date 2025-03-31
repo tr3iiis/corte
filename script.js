@@ -1,49 +1,50 @@
-document.getElementById("predictForm").addEventListener("submit", async function(event) {
+document.getElementById("predictForm").addEventListener("submit", async (event) => {
     event.preventDefault();
     
     const button = document.getElementById("predictButton");
     const resultDiv = document.getElementById("result");
     const loader = document.getElementById("loader");
     
-    // Mostrar loader e desabilitar botão
+    // Reset e loading
+    resultDiv.textContent = "";
     button.disabled = true;
     loader.style.display = "block";
-    resultDiv.textContent = "";
 
     try {
-        const formData = new FormData(event.target);
-        const musicData = {
-            Duration: parseFloat(formData.get("Duration")),
-            Popularity: parseFloat(formData.get("Popularity")),
-            Danceability: parseFloat(formData.get("Danceability")),
-            Energy: parseFloat(formData.get("Energy")),
-            Key: parseFloat(formData.get("Key")),
-            Loudness: parseFloat(formData.get("Loudness")),
-            Mode: parseFloat(formData.get("Mode")),
-            Speechiness: parseFloat(formData.get("Speechiness")),
-            Acousticness: parseFloat(formData.get("Acousticness")),
-            Instrumentalness: parseFloat(formData.get("Instrumentalness")),
-            Liveness: parseFloat(formData.get("Liveness")),
-            Valence: parseFloat(formData.get("Valence")),
-            Tempo: parseFloat(formData.get("Tempo")),
-            "Time Signature": parseFloat(formData.get("Time_Signature"))
+        // Capturar dados do formulário
+        const formData = {
+            Duration: parseFloat(document.getElementById("duration").value),
+            Popularity: parseFloat(document.getElementById("popularity").value),
+            Danceability: parseFloat(document.getElementById("danceability").value),
+            Energy: parseFloat(document.getElementById("energy").value),
+            Key: parseFloat(document.getElementById("key").value),
+            Loudness: parseFloat(document.getElementById("loudness").value),
+            Mode: parseFloat(document.getElementById("mode").value),
+            Speechiness: parseFloat(document.getElementById("speechiness").value),
+            Acousticness: parseFloat(document.getElementById("acousticness").value),
+            Instrumentalness: parseFloat(document.getElementById("instrumentalness").value),
+            Liveness: parseFloat(document.getElementById("liveness").value),
+            Valence: parseFloat(document.getElementById("valence").value),
+            Tempo: parseFloat(document.getElementById("tempo").value),
+            "Time Signature": parseFloat(document.getElementById("time_signature").value)
         };
 
-        // ✅ Substitua pela URL da SUA API no Render
-        const response = await fetch("https://tarot-api-1234.onrender.com/predict", {
+        // ✅ URL da SUA API (substitua pelo seu link do Render)
+        const response = await fetch("https://tarot-classifier.onrender.com/predict", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(musicData)
+            body: JSON.stringify(formData)
         });
 
-        if (!response.ok) throw new Error(`Erro HTTP! Status: ${response.status}`);
+        if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
         
-        const result = await response.json();
-        resultDiv.textContent = `Carta prevista: ${result.carta_prevista}`;
+        const data = await response.json();
+        resultDiv.textContent = `Carta prevista: ${data.carta_prevista}`;
         resultDiv.style.color = "green";
+
     } catch (error) {
         console.error("Erro:", error);
-        resultDiv.textContent = "Erro ao prever. Verifique o console (F12).";
+        resultDiv.textContent = "Erro na previsão. Verifique o console (F12).";
         resultDiv.style.color = "red";
     } finally {
         button.disabled = false;
