@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Previsão de Cartas</title>
+    <script>
+        async function preverCarta() {
+            let dados = {
+                "Duration": parseFloat(document.getElementById("duration").value),
+                "Popularity": parseFloat(document.getElementById("popularity").value),
+                "Danceability": parseFloat(document.getElementById("danceability").value),
+                "Energy": parseFloat(document.getElementById("energy").value),
+                "Key": parseInt(document.getElementById("key").value),
+                "Loudness": parseFloat(document.getElementById("loudness").value),
+                "Mode": parseInt(document.getElementById("mode").value),
+                "Speechiness": parseFloat(document.getElementById("speechiness").value),
+                "Acousticness": parseFloat(document.getElementById("acousticness").value),
+                "Instrumentalness": parseFloat(document.getElementById("instrumentalness").value),
+                "Liveness": parseFloat(document.getElementById("liveness").value),
+                "Valence": parseFloat(document.getElementById("valence").value),
+                "Tempo": parseFloat(document.getElementById("tempo").value),
+                "Time Signature": parseInt(document.getElementById("time_signature").value)
+            };
+
+            let resposta = await fetch("http://127.0.0.1:5000/predict", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(dados)
+            });
+
+            let resultado = await resposta.json();
+            document.getElementById("resultado").innerText = "Carta prevista: " + resultado.carta_prevista;
+        }
+    </script>
+</head>
+<body>
+    <h2>Prever Carta com Metadados da Música</h2>
+    <label>Duration (ms):</label> <input id="duration" type="number"><br>
+    <label>Popularity:</label> <input id="popularity" type="number"><br>
+    <label>Danceability:</label> <input id="danceability" type="number"><br>
+    <label>Energy:</label> <input id="energy" type="number"><br>
+    <label>Key:</label> <input id="key" type="number"><br>
+    <label>Loudness:</label> <input id="loudness" type="number"><br>
+    <label>Mode:</label> <input id="mode" type="number"><br>
+    <label>Speechiness:</label> <input id="speechiness" type="number"><br>
+    <label>Acousticness:</label> <input id="acousticness" type="number"><br>
+    <label>Instrumentalness:</label> <input id="instrumentalness" type="number"><br>
+    <label>Liveness:</label> <input id="liveness" type="number"><br>
+    <label>Valence:</label> <input id="valence" type="number"><br>
+    <label>Tempo:</label> <input id="tempo" type="number"><br>
+    <label>Time Signature:</label> <input id="time_signature" type="number"><br>
+    <button onclick="preverCarta()">Prever Carta</button>
+    <h3 id="resultado"></h3>
+</body>
+</html>
