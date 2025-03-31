@@ -34,3 +34,8 @@ def predict():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))  # <--- Linha nova
     app.run(host='0.0.0.0', port=port)  # <--- Linha modificada
+
+from flask_cors import CORS  # <--- Adicione no topo
+
+app = Flask(__name__)
+CORS(app)  # <--- Permite requisições do seu site
