@@ -30,7 +30,7 @@ document.getElementById("predictForm").addEventListener("submit", async (event) 
         };
 
         // Replace with your actual API endpoint
-        const response = await fetch("https://tarot-classifier.onrender.com/predict", {
+        const response = await fetch("https://tarot-classifier.onrender.com", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
