@@ -47,7 +47,6 @@
         #resultado {
             margin-top: 20px;
             padding: 10px;
-            border-radius: 4px;
         }
         .sucesso {
             background-color: #dff0d8;
@@ -136,6 +135,7 @@
             loader.style.display = "block";
 
             try {
+                // Capture form data
                 const formData = {
                     Duration: parseFloat(document.getElementById("duration").value),
                     Popularity: parseFloat(document.getElementById("popularity").value),
