@@ -30,7 +30,7 @@ document.getElementById("predictForm").addEventListener("submit", async (event) 
         };
 
         // ✅ URL da SUA API (substitua pelo seu link do Render)
-        const response = await fetch("https://tarot-classifier.onrender.com/predict", {
+        const response = await fetch("https://tarot-classifier.onrender.com"), {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(formData)
