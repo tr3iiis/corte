@@ -2,56 +2,182 @@
 <html>
 <head>
     <title>Previsão de Cartas</title>
-    <script>
-        async function preverCarta() {
-            let dados = {
-                "Duration": parseFloat(document.getElementById("duration").value),
-                "Popularity": parseFloat(document.getElementById("popularity").value),
-                "Danceability": parseFloat(document.getElementById("danceability").value),
-                "Energy": parseFloat(document.getElementById("energy").value),
-                "Key": parseInt(document.getElementById("key").value),
-                "Loudness": parseFloat(document.getElementById("loudness").value),
-                "Mode": parseInt(document.getElementById("mode").value),
-                "Speechiness": parseFloat(document.getElementById("speechiness").value),
-                "Acousticness": parseFloat(document.getElementById("acousticness").value),
-                "Instrumentalness": parseFloat(document.getElementById("instrumentalness").value),
-                "Liveness": parseFloat(document.getElementById("liveness").value),
-                "Valence": parseFloat(document.getElementById("valence").value),
-                "Tempo": parseFloat(document.getElementById("tempo").value),
-                "Time Signature": parseInt(document.getElementById("time_signature").value)
-            };
-
-            let resposta = await fetch("http://127.0.0.1:5000/predict", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(dados)
-            });
-
-            let resultado = await resposta.json();
-            document.getElementById("resultado").innerText = "Carta prevista: " + resultado.carta_prevista;
-            <div id="loader" style="display: none; color: blue; margin-top: 10px;">
-    <p>Analisando metadados musicais... 🔮</p>
-</div>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f0f0f0;
         }
-    </script>
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #loader {
+            color: #666;
+            margin: 10px 0;
+        }
+        #resultado {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .sucesso {
+            background-color: #dff0d8;
+        }
+        .erro {
+            background-color: #ffe6e6;
+        }
+    </style>
 </head>
 <body>
-    <h2>Prever Carta com Metadados da Música</h2>
-    <label>Duration (ms):</label> <input id="duration" type="number"><br>
-    <label>Popularity:</label> <input id="popularity" type="number"><br>
-    <label>Danceability:</label> <input id="danceability" type="number"><br>
-    <label>Energy:</label> <input id="energy" type="number"><br>
-    <label>Key:</label> <input id="key" type="number"><br>
-    <label>Loudness:</label> <input id="loudness" type="number"><br>
-    <label>Mode:</label> <input id="mode" type="number"><br>
-    <label>Speechiness:</label> <input id="speechiness" type="number"><br>
-    <label>Acousticness:</label> <input id="acousticness" type="number"><br>
-    <label>Instrumentalness:</label> <input id="instrumentalness" type="number"><br>
-    <label>Liveness:</label> <input id="liveness" type="number"><br>
-    <label>Valence:</label> <input id="valence" type="number"><br>
-    <label>Tempo:</label> <input id="tempo" type="number"><br>
-    <label>Time Signature:</label> <input id="time_signature" type="number"><br>
-    <button onclick="preverCarta()">Prever Carta</button>
-    <h3 id="resultado"></h3>
+    <div class="container">
+        <h2>Previsão de Cartas do Tarot</h2>
+        <form id="predictForm">
+            <div class="form-group">
+                <label for="duration">Duração (ms):</label>
+                <input type="number" id="duration" step="1">
+            </div>
+            <div class="form-group">
+                <label for="popularity">Popularidade:</label>
+                <input type="number" id="popularity" step="0.1">
+            </div>
+            <div class="form-group">
+                <label for="danceability">Danceabilidade:</label>
+                <input type="number" id="danceability" step="0.1">
+            </div>
+            <div class="form-group">
+                <label for="energy">Energia:</label>
+                <input type="number" id="energy" step="0.1">
+            </div>
+            <div class="form-group">
+                <label for="key">Tom (Key):</label>
+                <input type="number" id="key" step="1">
+            </div>
+            <div class="form-group">
+                <label for="loudness">Volume (Loudness):</label>
+                <input type="number" id="loudness" step="0.1">
+            </div>
+            <div class="form-group">
+                <label for="mode">Modo (Mode):</label>
+                <input type="number" id="mode" step="1">
+            </div>
+            <div class="form-group">
+                <label for="speechiness">Fala (Speechiness):</label>
+                <input type="number" id="speechiness" step="0.1">
+            </div>
+            <div class="form-group">
+                <label for="acousticness">Acústica (Acousticness):</label>
+                <input type="number" id="acousticness" step="0.1">
+            </div>
+            <div class="form-group">
+                <label for="instrumentalness">Instrumentalidade:</label>
+                <input type="number" id="instrumentalness" step="0.1">
+            </div>
+            <div class="form-group">
+                <label for="liveness">Vivacidade (Liveness):</label>
+                <input type="number" id="liveness" step="0.1">
+            </div>
+            <div class="form-group">
+                <label for="valence">Valência (Valence):</label>
+                <input type="number" id="valence" step="0.1">
+            </div>
+            <div class="form-group">
+                <label for="tempo">Tempo (BPM):</label>
+                <input type="number" id="tempo" step="1">
+            </div>
+            <div class="form-group">
+                <label for="time_signature">Assinatura do Tempo:</label>
+                <input type="number" id="time_signature" step="1">
+            </div>
+            <button type="submit" id="predictButton">Prever Carta</button>
+        </form>
+        <div id="loader" style="display: none;">Analisando metadados musicais... 🔮</div>
+        <div id="resultado"></div>
+    </div>
+
+    <script>
+        document.getElementById("predictForm").addEventListener("submit", async (event) => {
+            event.preventDefault();
+            const button = document.getElementById("predictButton");
+            const resultDiv = document.getElementById("resultado");
+            const loader = document.getElementById("loader");
+
+            // Reset the result and show loading
+            resultDiv.textContent = "";
+            button.disabled = true;
+            loader.style.display = "block";
+
+            try {
+                const formData = {
+                    Duration: parseFloat(document.getElementById("duration").value),
+                    Popularity: parseFloat(document.getElementById("popularity").value),
+                    Danceability: parseFloat(document.getElementById("danceability").value),
+                    Energy: parseFloat(document.getElementById("energy").value),
+                    Key: parseInt(document.getElementById("key").value),
+                    Loudness: parseFloat(document.getElementById("loudness").value),
+                    Mode: parseInt(document.getElementById("mode").value),
+                    Speechiness: parseFloat(document.getElementById("speechiness").value),
+                    Acousticness: parseFloat(document.getElementById("acousticness").value),
+                    Instrumentalness: parseFloat(document.getElementById("instrumentalness").value),
+                    Liveness: parseFloat(document.getElementById("liveness").value),
+                    Valence: parseFloat(document.getElementById("valence").value),
+                    Tempo: parseFloat(document.getElementById("tempo").value),
+                    "Time Signature": parseInt(document.getElementById("time_signature").value)
+                };
+
+                // Replace with your actual API endpoint
+                const response = await fetch("https://your-api-url.onrender.com/predict", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                resultDiv.textContent = `Carta prevista: ${data.carta_prevista}`;
+                resultDiv.className = "resultado sucesso";
+            } catch (error) {
+                console.error("Error:", error);
+                resultDiv.textContent = `Erro na previsão: ${error.message}`;
+                resultDiv.className = "resultado erro";
+            } finally {
+                button.disabled = false;
+                loader.style.display = "none";
+            }
+        });
+    </script>
 </body>
 </html>
