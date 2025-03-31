@@ -29,6 +29,9 @@
 
             let resultado = await resposta.json();
             document.getElementById("resultado").innerText = "Carta prevista: " + resultado.carta_prevista;
+            <div id="loader" style="display: none; color: blue; margin-top: 10px;">
+    <p>Analisando metadados musicais... 🔮</p>
+</div>
         }
     </script>
 </head>
