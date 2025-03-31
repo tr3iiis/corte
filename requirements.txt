@@ -2,5 +2,6 @@ flask==3.0.2
 gunicorn==21.2.0
 numpy==1.26.4
 pandas==2.2.2
-scikit-learn==1.4.2
-tensorflow-cpu==2.16.1  # Versão mais leve do TensorFlow
+scikit-learn==1.6.1  # Atualize para a versão usada no Colab
+tensorflow-cpu==2.16.1
+joblib==1.4.2
