@@ -1,6 +1,6 @@
-flask
-gunicorn
-numpy
-pandas
-scikit-learn
-tensorflow
+flask==3.0.2
+gunicorn==21.2.0
+numpy==1.26.4
+pandas==2.2.2
+scikit-learn==1.4.2
+tensorflow-cpu==2.16.1  # Versão mais leve do TensorFlow
