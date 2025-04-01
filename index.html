@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Previsão de Cartas</title>
+    <title>*✩‧₊ʚ˚ Classificador Cartas da Corte ˚ɞ₊‧✩*</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -58,67 +58,67 @@
 </head>
 <body>
     <div class="container">
-        <h2>Previsão de Cartas do Tarot</h2>
+        <h2>Classificador Cartas da Corte</h2>
         <form id="predictForm">
             <div class="form-group">
-                <label for="duration">Duração (ms):</label>
+                <label for="duration">Duration (ms):</label>
                 <input type="number" id="duration" step="1">
             </div>
             <div class="form-group">
-                <label for="popularity">Popularidade:</label>
+                <label for="popularity">Popularity:</label>
                 <input type="number" id="popularity" step="0.1">
             </div>
             <div class="form-group">
-                <label for="danceability">Danceabilidade:</label>
+                <label for="danceability">Danceability:</label>
                 <input type="number" id="danceability" step="0.1">
             </div>
             <div class="form-group">
-                <label for="energy">Energia:</label>
+                <label for="energy">Energy:</label>
                 <input type="number" id="energy" step="0.1">
             </div>
             <div class="form-group">
-                <label for="key">Tom (Key):</label>
+                <label for="key">Key:</label>
                 <input type="number" id="key" step="1">
             </div>
             <div class="form-group">
-                <label for="loudness">Volume (Loudness):</label>
+                <label for="loudness">Loudness:</label>
                 <input type="number" id="loudness" step="0.1">
             </div>
             <div class="form-group">
-                <label for="mode">Modo (Mode):</label>
+                <label for="mode">Mode:</label>
                 <input type="number" id="mode" step="1">
             </div>
             <div class="form-group">
-                <label for="speechiness">Fala (Speechiness):</label>
+                <label for="speechiness">Speechiness:</label>
                 <input type="number" id="speechiness" step="0.1">
             </div>
             <div class="form-group">
-                <label for="acousticness">Acústica (Acousticness):</label>
+                <label for="acousticness">Acousticness:</label>
                 <input type="number" id="acousticness" step="0.1">
             </div>
             <div class="form-group">
-                <label for="instrumentalness">Instrumentalidade:</label>
+                <label for="instrumentalness">Instrumentalness:</label>
                 <input type="number" id="instrumentalness" step="0.1">
             </div>
             <div class="form-group">
-                <label for="liveness">Vivacidade (Liveness):</label>
+                <label for="liveness">Liveness:</label>
                 <input type="number" id="liveness" step="0.1">
             </div>
             <div class="form-group">
-                <label for="valence">Valência (Valence):</label>
+                <label for="valence">Valence:</label>
                 <input type="number" id="valence" step="0.1">
             </div>
             <div class="form-group">
-                <label for="tempo">Tempo (BPM):</label>
+                <label for="tempo">Tempo:</label>
                 <input type="number" id="tempo" step="1">
             </div>
             <div class="form-group">
-                <label for="time_signature">Assinatura do Tempo:</label>
+                <label for="time_signature">Time Signature:</label>
                 <input type="number" id="time_signature" step="1">
             </div>
-            <button type="submit" id="predictButton">Prever Carta</button>
+            <button type="submit" id="predictButton">Classificar</button>
         </form>
-        <div id="loader" style="display: none;">Analisando metadados musicais... 🔮</div>
+        <div id="loader" style="display: none;">⏳ Carregando...</div>
         <div id="resultado"></div>
     </div>
 
