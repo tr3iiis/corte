@@ -157,4 +157,82 @@
                 <input type="number" id="tempo" step="1">
             </div>
             <div class="form-group">
-                <label for="
+                <label for="time_signature">Time Signature:</label>
+                <input type="number" id="time_signature" step="1">
+            </div>
+            <button type="submit" id="predictButton">Classificar</button>
+        </form>
+        <div id="loader" style="display: none;">⏳ Carregando...</div>
+        <div id="resultado"></div>
+    </div>
+
+    <script>
+        document.getElementById("predictForm").addEventListener("submit", async (event) => {
+            event.preventDefault();
+            const button = document.getElementById("predictButton");
+            const resultDiv = document.getElementById("resultado");
+            const loader = document.getElementById("loader");
+
+            resultDiv.textContent = "";
+            resultDiv.className = "resultado";
+            button.disabled = true;
+            loader.style.display = "block";
+
+            try {
+                const formData = {
+                    Duration: parseFloat(document.getElementById("duration").value) || 0, // Add default value 0 if input is empty
+                    Popularity: parseFloat(document.getElementById("popularity").value) || 0,
+                    Danceability: parseFloat(document.getElementById("danceability").value) || 0,
+                    Energy: parseFloat(document.getElementById("energy").value) || 0,
+                    Key: parseInt(document.getElementById("key").value) || 0,
+                    Loudness: parseFloat(document.getElementById("loudness").value) || 0,
+                    Mode: parseInt(document.getElementById("mode").value) || 0,
+                    Speechiness: parseFloat(document.getElementById("speechiness").value) || 0,
+                    Acousticness: parseFloat(document.getElementById("acousticness").value) || 0,
+                    Instrumentalness: parseFloat(document.getElementById("instrumentalness").value) || 0,
+                    Liveness: parseFloat(document.getElementById("liveness").value) || 0,
+                    Valence: parseFloat(document.getElementById("valence").value) || 0,
+                    Tempo: parseFloat(document.getElementById("tempo").value) || 0,
+                    "Time Signature": parseInt(document.getElementById("time_signature").value) || 0
+                };
+
+                // Check for NaN values which might occur if parseFloat/parseInt fails on non-numeric input
+                for (const key in formData) {
+                    if (isNaN(formData[key])) {
+                         throw new Error(`Valor inválido inserido para ${key}. Por favor, use apenas números.`);
+                    }
+                }
+
+
+                const response = await fetch("https://tarot-classifier.onrender.com/predict", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const status = response.status;
+                const data = await response.json();
+
+                if (!response.ok) {
+                    const errorMessage = data.error || `HTTP error! status: ${status}`;
+                    throw new Error(errorMessage);
+                }
+
+                resultDiv.textContent = `Carta prevista: ${data.carta_prevista}`;
+                resultDiv.className = "resultado sucesso";
+
+            } catch (error) {
+                console.error("Error:", error);
+                // Display more specific error if available, otherwise generic message
+                resultDiv.textContent = error.message.startsWith("Valor inválido") ? error.message : `Erro na previsão: ${error.message}`;
+                resultDiv.className = "resultado erro";
+            } finally {
+                button.disabled = false;
+                loader.style.display = "none";
+            }
+        });
+    </script>
+</body>
+</html>
