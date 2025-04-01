@@ -4,31 +4,53 @@
     <title>♣♥ Classificador Cartas da Corte ♠♦</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f0f0f0;
-        }
-        .container {
+            /* Fonte padrão alterada para Helvetica, com fallbacks */
+            font-family: Helvetica, Arial, sans-serif;
+            max-width: 600px; /* Diminuí um pouco a largura máxima para compactar */
+            margin: 0 auto; /* Centraliza o conteúdo */
+            /* Padding geral reduzido */
+            padding: 15px;
+            /* Fundo branco direto no body */
             background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
+        /* Estilos do .container foram removidos */
+
+        h2 {
+            /* Fonte do título alterada */
+            font-family: 'Times New Roman', Times, serif;
+            /* Título centralizado */
+            text-align: center;
+            /* Espaço abaixo do título */
+            margin-bottom: 25px;
+            margin-top: 10px;
+        }
+
         .form-group {
-            margin-bottom: 15px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        input {
-            width: 100%;
-            padding: 8px;
+            /* Margem inferior reduzida para compactar */
             margin-bottom: 10px;
         }
+
+        label {
+            display: block;
+            /* Margem inferior reduzida */
+            margin-bottom: 3px;
+            font-weight: bold;
+            font-size: 0.9em; /* Fonte da label um pouco menor */
+        }
+
+        input {
+            width: 100%;
+            /* Adicionado para padding/border não aumentar largura total */
+            box-sizing: border-box;
+            /* Padding reduzido */
+            padding: 5px;
+            /* Margem inferior reduzida */
+            margin-bottom: 5px;
+            /* Adicionada borda sutil */
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
         button {
             background-color: #4CAF50;
             color: white;
@@ -36,28 +58,47 @@
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            /* Para centralizar o botão */
+            display: block;
+            margin: 20px auto 0 auto; /* Margem acima e centralizado horizontalmente */
         }
+
         button:hover {
             background-color: #45a049;
         }
+
         #loader {
             color: #666;
-            margin: 10px 0;
+            margin: 15px 0; /* Aumentei um pouco a margem vertical */
+            /* Centraliza texto do loader */
+            text-align: center;
         }
+
         #resultado {
-            margin-top: 20px;
-            padding: 10px;
+            margin-top: 25px; /* Mais espaço antes do resultado */
+            padding: 15px;
+            border-radius: 5px;
+            /* Centraliza texto do resultado */
+            text-align: center;
+            font-weight: bold;
+            word-wrap: break-word; /* Para quebrar texto longo se necessário */
         }
+
+        /* Estilos melhorados para sucesso/erro */
         .sucesso {
-            background-color: #dff0d8;
+            background-color: #e8f5e9; /* Verde claro */
+            color: #2e7d32; /* Verde escuro */
+            border: 1px solid #a5d6a7; /* Borda verde */
         }
         .erro {
-            background-color: #ffe6e6;
+            background-color: #ffebee; /* Vermelho claro */
+            color: #c62828; /* Vermelho escuro */
+            border: 1px solid #ef9a9a; /* Borda vermelha */
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div>
         <h2>♣♥ Classificador Cartas da Corte ♠♦</h2>
         <form id="predictForm">
             <div class="form-group">
@@ -119,8 +160,7 @@
             <button type="submit" id="predictButton">Classificar</button>
         </form>
         <div id="loader" style="display: none;">⏳ Carregando...</div>
-        <div id="resultado"></div>
-    </div>
+        <div id="resultado"></div> </div>
 
     <script>
         document.getElementById("predictForm").addEventListener("submit", async (event) => {
@@ -131,6 +171,7 @@
 
             // Reset the result and show loading
             resultDiv.textContent = "";
+            resultDiv.className = "resultado"; // Limpa classes de sucesso/erro
             button.disabled = true;
             loader.style.display = "block";
 
@@ -141,16 +182,16 @@
                     Popularity: parseFloat(document.getElementById("popularity").value),
                     Danceability: parseFloat(document.getElementById("danceability").value),
                     Energy: parseFloat(document.getElementById("energy").value),
-                    Key: parseInt(document.getElementById("key").value),
+                    Key: parseInt(document.getElementById("key").value), // Usando parseInt
                     Loudness: parseFloat(document.getElementById("loudness").value),
-                    Mode: parseInt(document.getElementById("mode").value),
+                    Mode: parseInt(document.getElementById("mode").value), // Usando parseInt
                     Speechiness: parseFloat(document.getElementById("speechiness").value),
                     Acousticness: parseFloat(document.getElementById("acousticness").value),
                     Instrumentalness: parseFloat(document.getElementById("instrumentalness").value),
                     Liveness: parseFloat(document.getElementById("liveness").value),
                     Valence: parseFloat(document.getElementById("valence").value),
                     Tempo: parseFloat(document.getElementById("tempo").value),
-                    "Time Signature": parseInt(document.getElementById("time_signature").value)
+                    "Time Signature": parseInt(document.getElementById("time_signature").value) // Usando parseInt
                 };
 
                 // Replace with your actual API endpoint
@@ -162,17 +203,23 @@
                     body: JSON.stringify(formData)
                 });
 
+                // Pega o status ANTES de tentar ler o JSON (importante para erros 500)
+                const status = response.status;
+                const data = await response.json(); // Tenta ler o JSON de qualquer forma
+
                 if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                    // Se tiver uma mensagem de erro no JSON da API, usa ela, senão usa o status
+                    const errorMessage = data.error || `HTTP error! status: ${status}`;
+                    throw new Error(errorMessage);
                 }
 
-                const data = await response.json();
                 resultDiv.textContent = `Carta prevista: ${data.carta_prevista}`;
-                resultDiv.className = "resultado sucesso";
+                resultDiv.className = "resultado sucesso"; // Adiciona classe de sucesso
+
             } catch (error) {
                 console.error("Error:", error);
                 resultDiv.textContent = `Erro na previsão: ${error.message}`;
-                resultDiv.className = "resultado erro";
+                resultDiv.className = "resultado erro"; // Adiciona classe de erro
             } finally {
                 button.disabled = false;
                 loader.style.display = "none";
