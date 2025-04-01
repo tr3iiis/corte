@@ -5,10 +5,8 @@
     <style>
         body {
             font-family: Helvetica, Arial, sans-serif;
-            /* Largura máxima ainda menor */
             max-width: 550px;
             margin: 0 auto;
-            /* Padding geral ainda menor */
             padding: 10px;
             background-color: white;
         }
@@ -16,20 +14,17 @@
         h2 {
             font-family: 'Times New Roman', Times, serif;
             text-align: center;
-            /* Margem e tamanho reduzidos */
             margin-bottom: 15px;
             margin-top: 10px;
             font-size: 1.7em;
         }
 
         .form-group {
-            /* Margem inferior ainda menor */
             margin-bottom: 7px;
         }
 
         label {
             display: block;
-            /* Margem e tamanho reduzidos */
             margin-bottom: 2px;
             font-weight: bold;
             font-size: 0.85em;
@@ -38,54 +33,51 @@
         input {
             width: 100%;
             box-sizing: border-box;
-            /* Padding ainda menor */
             padding: 4px;
-            /* Margem inferior ainda menor */
             margin-bottom: 3px;
             border: 1px solid #ccc;
             border-radius: 3px;
-             /* Fonte um pouco menor no input */
             font-size: 0.9em;
         }
 
         /* --- Estilo do Botão Atualizado --- */
         button {
-            /* Estilo similar ao site Gematria */
-            background-color: #000; /* Fundo preto */
-            color: #fff; /* Texto branco */
+            /* Simula botão padrão cinza/contornado */
+            background-color: #f0f0f0; /* Fundo cinza claro */
+            color: #333; /* Texto cinza escuro */
+            border: 1px solid #767676; /* Borda cinza padrão */
             border-radius: 5px; /* Cantos arredondados */
             /* Mantidos/Ajustados */
             padding: 10px 20px;
-            border: none;
             cursor: pointer;
             display: block;
-            margin: 15px auto 0 auto; /* Margem acima e centralizado */
-            font-size: 0.95em; /* Tamanho da fonte do botão */
+            margin: 15px auto 0 auto;
+            font-size: 0.95em;
+            font-family: inherit; /* Usa a fonte do body */
         }
 
         button:hover {
             /* Efeito hover sutil */
-            background-color: #333; /* Cinza escuro */
+            background-color: #e0e0e0; /* Fundo um pouco mais escuro */
+            border-color: #555; /* Borda um pouco mais escura */
         }
         /* --- Fim do Estilo do Botão --- */
 
         #loader {
             color: #666;
-            /* Margem reduzida */
             margin: 10px 0;
             text-align: center;
-            font-size: 0.9em; /* Loader um pouco menor */
+            font-size: 0.9em;
         }
 
         #resultado {
-            /* Margem acima reduzida */
             margin-top: 15px;
-            padding: 12px; /* Padding um pouco menor */
+            padding: 12px;
             border-radius: 5px;
             text-align: center;
             font-weight: bold;
             word-wrap: break-word;
-            font-size: 0.95em; /* Resultado um pouco menor */
+            font-size: 0.95em;
         }
 
         .sucesso {
@@ -180,7 +172,7 @@
 
             try {
                 const formData = {
-                    Duration: parseFloat(document.getElementById("duration").value) || 0, // Add default value 0 if input is empty
+                    Duration: parseFloat(document.getElementById("duration").value) || 0,
                     Popularity: parseFloat(document.getElementById("popularity").value) || 0,
                     Danceability: parseFloat(document.getElementById("danceability").value) || 0,
                     Energy: parseFloat(document.getElementById("energy").value) || 0,
@@ -196,7 +188,6 @@
                     "Time Signature": parseInt(document.getElementById("time_signature").value) || 0
                 };
 
-                // Check for NaN values which might occur if parseFloat/parseInt fails on non-numeric input
                 for (const key in formData) {
                     if (isNaN(formData[key])) {
                          throw new Error(`Valor inválido inserido para ${key}. Por favor, use apenas números.`);
@@ -225,7 +216,6 @@
 
             } catch (error) {
                 console.error("Error:", error);
-                // Display more specific error if available, otherwise generic message
                 resultDiv.textContent = error.message.startsWith("Valor inválido") ? error.message : `Erro na previsão: ${error.message}`;
                 resultDiv.className = "resultado erro";
             } finally {
