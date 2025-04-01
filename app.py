@@ -16,7 +16,7 @@ try:
     model = joblib.load("modelo_cartas.pkl")
     scaler = joblib.load("scaler.pkl")
     labels = joblib.load("labels.pkl")
-    print("Modelo, scaler e labels carregados com sucesso.")
+    print("Modelo, scaler e labels carregados com sucesso.") # Log de sucesso
 except FileNotFoundError as e:
     print(f"Erro CRÍTICO ao carregar arquivos .pkl: {e}")
     print("API não funcionará corretamente sem os arquivos .pkl.")
@@ -95,7 +95,6 @@ def get_track_features(track_id, token):
         if None in required_features.values():
              missing = [k for k, v in required_features.items() if v is None]
              print(f"Aviso: Features faltando na resposta do Spotify para track {track_id}: {missing}")
-             # Decide o que fazer - aqui estamos retornando erro, mas poderia usar default
              return None, f"Features faltando do Spotify: {missing}"
 
         return required_features, None # Retorna features e None para erro
@@ -131,11 +130,12 @@ def perform_prediction(feature_dict):
         prediction_index = model.predict(features_scaled)[0]
 
         # Verifica se prediction_index é válido para 'labels'
-        if 0 <= prediction_index < len(labels):
+        # Assumindo que 'labels' pode ser numpy array ou list
+        if isinstance(prediction_index, (int, np.integer)) and 0 <= prediction_index < len(labels):
              predicted_card = labels[prediction_index]
              return predicted_card, None # Retorna carta e None para erro
         else:
-             print(f"Erro: Índice de previsão ({prediction_index}) fora do range dos labels.")
+             print(f"Erro: Índice de previsão ({prediction_index}, tipo: {type(prediction_index)}) fora do range dos labels (tamanho: {len(labels)}).")
              return None, "Erro ao mapear previsão para label."
 
     except KeyError as e:
@@ -188,9 +188,15 @@ def search_and_predict():
     song_name = data['song_name']
     artist_name = data.get('artist_name', '') # Pega o artista se fornecido, senão usa vazio
 
+    print("LOG: Tentando obter token do Spotify...") # Mensagem antes de tentar
     token = get_spotify_token()
     if not token:
-        return jsonify({"error": "Não foi possível autenticar com o Spotify."}), 503 # Service Unavailable
+        print("LOG: Falha ao obter token do Spotify.") # Mensagem se falhar
+        return jsonify({"error": "Não foi possível autenticar com o Spotify."}), 503
+
+    # --- Linha de Debug Adicionada ---
+    print(f"LOG: Token obtido com sucesso (início): {token[:10]}...") # Imprime só o começo do token!
+    # ---------------------------------
 
     # Monta a query de busca
     search_query = f"track:{song_name}"
@@ -217,7 +223,9 @@ def search_and_predict():
         # Busca as features da música encontrada
         features_dict, error_msg = get_track_features(track_id, token)
         if error_msg:
-            return jsonify({"error": error_msg}), 500
+             # Não retorna imediatamente, vamos logar o erro que veio de get_track_features
+             print(f"LOG: Erro retornado por get_track_features: {error_msg}")
+             return jsonify({"error": error_msg}), 500 # Retorna o erro original
 
         # Faz a previsão com as features obtidas
         predicted_card, error_msg = perform_prediction(features_dict)
@@ -232,9 +240,16 @@ def search_and_predict():
 
     except requests.exceptions.RequestException as e:
         print(f"Erro na busca do Spotify para '{song_name}': {e}")
+        # Verifica se o erro foi 403 especificamente na busca
+        if e.response is not None and e.response.status_code == 403:
+             print("LOG: Erro 403 recebido durante a busca no Spotify. Verificar token/credenciais.")
+             return jsonify({"error": "Erro de permissão ao buscar no Spotify (verificar token)."}), 403
         return jsonify({"error": f"Erro ao buscar no Spotify: {e}"}), 502 # Bad Gateway
     except Exception as e:
         print(f"Erro inesperado no processamento da busca/previsão: {e}")
+        # Adiciona log do traceback para depuração mais profunda
+        import traceback
+        traceback.print_exc()
         return jsonify({"error": f"Erro interno inesperado: {e}"}), 500
 
 
